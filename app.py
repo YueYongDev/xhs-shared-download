@@ -65,10 +65,10 @@ def download():
         return f"下载失败: {str(e)}", 500
 
 
-@api.route('/api/video',methods=['GET'])
+@api.route('/api/video',methods=['POST'])
 def video_dowload():
   #from-data格式参数
-  share_url = request.json.get('shareUrl')
+  share_url = request.get_json().get('shareUrl')
   if share_url:
       short_url = parse_share(share_url)
       html_content = requests.get(short_url).content
@@ -87,7 +87,7 @@ def video_dowload():
 
 def parse_share(share_text):
     # 定义小红书短链接的正则表达式模式
-    pattern = r'http://xhslink\.com/\S+'
+    pattern = r'https?://[^\s]+'
     
     # 查找匹配的链接
     match = re.search(pattern, share_text)
@@ -99,6 +99,6 @@ def parse_share(share_text):
 
 
 if __name__ == '__main__':
-  api.run(port=10010,debug=True,host='0.0.0.0') # 启动服务
-  # debug=True,改了代码后，不用重启，它会自动重启
-  # 'host='127.0.0.1'别IP访问地址
+  api.run(port=10010,debug=False,host='0.0.0.0') # 启动服务
+  # debug=False,生产环境禁用debug模式
+  # 'host='0.0.0.0'允许所有IP访问
